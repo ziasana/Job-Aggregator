@@ -1,0 +1,27 @@
+{
+  "count": 2,
+  "results": [
+    {
+      "id": "5001",
+      "title": "Java Developer",
+      "description": "Spring Boot role.",
+      "company": { "display_name": "Beta AG" },
+      "location": { "display_name": "Hamburg" },
+      "salary_min": 55000,
+      "salary_max": 70000,
+      "redirect_url": "https://www.adzuna.de/details/5001",
+      "created": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": "5002",
+      "title": "DevOps Engineer",
+      "description": "Cloud infrastructure role.",
+      "company": { "display_name": "Beta AG" },
+      "location": { "display_name": "Cologne" },
+      "salary_min": null,
+      "salary_max": null,
+      "redirect_url": "https://www.adzuna.de/details/5002",
+      "created": "2024-01-16T09:00:00Z"
+    }
+  ]
+}

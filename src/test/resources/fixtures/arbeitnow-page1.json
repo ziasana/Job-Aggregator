@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "slug": "backend-developer-acme-berlin",
+      "company_name": "Acme GmbH",
+      "title": "Backend Developer",
+      "description": "Join our backend team.",
+      "url": "https://www.arbeitnow.com/view/backend-developer-acme-berlin",
+      "location": "Berlin",
+      "created_at": 1700000000
+    },
+    {
+      "slug": "frontend-developer-acme-munich",
+      "company_name": "Acme GmbH",
+      "title": "Frontend Developer",
+      "description": "Join our frontend team.",
+      "url": "https://www.arbeitnow.com/view/frontend-developer-acme-munich",
+      "location": "Munich",
+      "created_at": 1700003600
+    }
+  ],
+  "links": {
+    "next": null
+  }
+}

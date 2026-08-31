@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: job-aggregator
+  datasource:
+    url: jdbc:postgresql://localhost:${DB_PORT:5434}/${DB_NAME:job_aggregator}
+    username: ${DB_USER:job_aggregator}
+    password: ${DB_PASSWORD:job_aggregator}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.jobaggregator: debug
+
+job-aggregator:
+  adzuna:
+    base-url: https://api.adzuna.com/v1/api/jobs
+    country: de
+    app-id: ${ADZUNA_APP_ID:}
+    app-key: ${ADZUNA_APP_KEY:}
+    max-pages: 5
+  bundesagentur:
+    base-url: https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs
+    api-key: ${BUNDESAGENTUR_API_KEY:jobboerse-jobsuche}
+    max-pages: 5
+  arbeitnow:
+    base-url: https://www.arbeitnow.com/api/job-board-api
+    max-pages: 5

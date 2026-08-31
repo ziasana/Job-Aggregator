@@ -1,0 +1,17 @@
+{
+  "stellenangebote": [
+    {
+      "refnr": "10001-1234567-S",
+      "titel": "Softwareentwickler (m/w/d)",
+      "arbeitgeber": "Gamma KG",
+      "arbeitsort": {
+        "ort": "Stuttgart",
+        "plz": "70173"
+      },
+      "aktuelleVeroeffentlichungsdatum": "2024-02-01"
+    }
+  ],
+  "maxErgebnisse": 1,
+  "page": 0,
+  "size": 50
+}
