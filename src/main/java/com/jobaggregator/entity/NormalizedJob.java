@@ -38,6 +38,9 @@ public class NormalizedJob {
 
     private String location;
 
+    @Column(columnDefinition = "text")
+    private String description;
+
     @Column(name = "salary_min")
     private BigDecimal salaryMin;
 
@@ -72,6 +75,7 @@ public class NormalizedJob {
             String title,
             String company,
             String location,
+            String description,
             BigDecimal salaryMin,
             BigDecimal salaryMax,
             String currency,
@@ -85,6 +89,7 @@ public class NormalizedJob {
         this.title = title;
         this.company = company;
         this.location = location;
+        this.description = description;
         this.salaryMin = salaryMin;
         this.salaryMax = salaryMax;
         this.currency = currency != null ? currency : "EUR";
@@ -128,6 +133,14 @@ public class NormalizedJob {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public BigDecimal getSalaryMin() {

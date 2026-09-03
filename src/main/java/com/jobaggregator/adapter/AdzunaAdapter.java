@@ -84,6 +84,7 @@ public class AdzunaAdapter implements JobSourceAdapter {
                 dto.title(),
                 company,
                 location,
+                dto.description(),
                 dto.salaryMin(),
                 dto.salaryMax(),
                 "EUR",

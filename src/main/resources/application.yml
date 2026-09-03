@@ -31,3 +31,5 @@ job-aggregator:
   arbeitnow:
     base-url: https://www.arbeitnow.com/api/job-board-api
     max-pages: 5
+  dedup:
+    title-similarity-threshold: 0.90

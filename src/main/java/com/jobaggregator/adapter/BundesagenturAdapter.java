@@ -97,6 +97,7 @@ public class BundesagenturAdapter implements JobSourceAdapter {
                 location,
                 null,
                 null,
+                null,
                 "EUR",
                 detailUrl,
                 parsePublishedDate(textOrNull(listing, "aktuelleVeroeffentlichungsdatum")),

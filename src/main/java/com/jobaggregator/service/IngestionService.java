@@ -4,6 +4,7 @@ import com.jobaggregator.adapter.JobSourceAdapter;
 import com.jobaggregator.entity.JobSource;
 import com.jobaggregator.entity.NormalizedJob;
 import com.jobaggregator.repository.JobRepository;
+import com.jobaggregator.service.dedup.DuplicateDetectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,23 @@ public class IngestionService {
 
     private final List<JobSourceAdapter> adapters;
     private final JobRepository jobRepository;
+    private final DuplicateDetectionService duplicateDetectionService;
 
-    public IngestionService(List<JobSourceAdapter> adapters, JobRepository jobRepository) {
+    public IngestionService(
+            List<JobSourceAdapter> adapters,
+            JobRepository jobRepository,
+            DuplicateDetectionService duplicateDetectionService
+    ) {
         this.adapters = adapters;
         this.jobRepository = jobRepository;
+        this.duplicateDetectionService = duplicateDetectionService;
     }
 
     public void runIngestion() {
         for (JobSourceAdapter adapter : adapters) {
             runForSource(adapter);
         }
+        duplicateDetectionService.runDeduplication();
     }
 
     private void runForSource(JobSourceAdapter adapter) {
@@ -70,6 +78,7 @@ public class IngestionService {
             job.setTitle(incoming.getTitle());
             job.setCompany(incoming.getCompany());
             job.setLocation(incoming.getLocation());
+            job.setDescription(incoming.getDescription());
             job.setSalaryMin(incoming.getSalaryMin());
             job.setSalaryMax(incoming.getSalaryMax());
             job.setCurrency(incoming.getCurrency());

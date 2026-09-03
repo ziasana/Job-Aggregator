@@ -87,6 +87,7 @@ public class ArbeitnowAdapter implements JobSourceAdapter {
                 dto.title(),
                 dto.companyName(),
                 dto.location(),
+                dto.description(),
                 null,
                 null,
                 "EUR",

@@ -4,6 +4,7 @@ import com.jobaggregator.adapter.JobSourceAdapter;
 import com.jobaggregator.entity.JobSource;
 import com.jobaggregator.entity.NormalizedJob;
 import com.jobaggregator.repository.JobRepository;
+import com.jobaggregator.service.dedup.DuplicateDetectionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,6 +27,9 @@ class IngestionServiceTest {
     @Mock
     private JobRepository jobRepository;
 
+    @Mock
+    private DuplicateDetectionService duplicateDetectionService;
+
     @Test
     void runIngestion_isolatesFailureOfOneAdapterFromOthers() {
         JobSourceAdapter failingAdapter = mock(JobSourceAdapter.class);
@@ -39,7 +43,9 @@ class IngestionServiceTest {
         when(jobRepository.findBySourceAndExternalId(any(), anyString())).thenReturn(Optional.empty());
         when(jobRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        IngestionService service = new IngestionService(List.of(failingAdapter, workingAdapter), jobRepository);
+        IngestionService service = new IngestionService(
+                List.of(failingAdapter, workingAdapter), jobRepository, duplicateDetectionService
+        );
 
         service.runIngestion();
 
@@ -54,6 +60,7 @@ class IngestionServiceTest {
                 "Backend Developer",
                 "Acme GmbH",
                 "Berlin",
+                null,
                 null,
                 null,
                 "EUR",
