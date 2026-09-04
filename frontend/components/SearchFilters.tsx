@@ -1,15 +1,22 @@
 import { firstValue, type RawSearchParams } from "@/lib/searchParams";
-import { SOURCE_LABELS, type JobSource } from "@/lib/types";
+import { SOURCE_LABELS, type CategorySummaryDto, type JobSource } from "@/lib/types";
 
 const SOURCES: JobSource[] = ["ARBEITNOW", "ADZUNA", "BUNDESAGENTUR", "JOBICY"];
 
 const inputClassName =
   "w-full rounded-lg border border-black/10 bg-white px-3.5 py-2.5 text-sm text-navy placeholder:text-navy/40 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20";
 
-export default function SearchFilters({ searchParams }: { searchParams: RawSearchParams }) {
+export default function SearchFilters({
+  searchParams,
+  categories,
+}: {
+  searchParams: RawSearchParams;
+  categories: CategorySummaryDto[];
+}) {
   const q = firstValue(searchParams.q) ?? "";
   const location = firstValue(searchParams.location) ?? "";
   const source = firstValue(searchParams.source) ?? "";
+  const category = firstValue(searchParams.category) ?? "";
   const salaryMin = firstValue(searchParams.salaryMin) ?? "";
   const salaryMax = firstValue(searchParams.salaryMax) ?? "";
   const sortBy = firstValue(searchParams.sortBy) ?? "";
@@ -18,24 +25,32 @@ export default function SearchFilters({ searchParams }: { searchParams: RawSearc
     <form
       method="GET"
       action="/"
-      className="rounded-2xl bg-white p-5 shadow-xl shadow-black/10 ring-1 ring-black/5 sm:p-7"
+      className="rounded-3xl bg-white p-6 shadow-2xl shadow-black/20 ring-1 ring-black/5 sm:p-8"
     >
-      <h2 className="text-xl font-bold text-navy sm:text-2xl">
-        Search Real Jobs From <span className="text-brand">4 Sources</span>
+      <h2 className="text-xl font-extrabold text-navy sm:text-2xl">
+        Grow Your Career With <span className="text-brand">Job Aggregator</span>
       </h2>
-      <p className="mt-1 text-sm text-navy/60">
-        Every listing links back to the original posting — nothing is hosted here.
-      </p>
 
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
-        <Field label="Keyword" htmlFor="q" className="lg:col-span-2">
-          <input
-            id="q"
-            name="q"
-            defaultValue={q}
-            placeholder="Job title, company, keyword…"
-            className={inputClassName}
-          />
+      <div className="mt-5">
+        <input
+          id="q"
+          name="q"
+          defaultValue={q}
+          placeholder="Search job keywords…"
+          className={inputClassName}
+        />
+      </div>
+
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Field label="Job Category" htmlFor="category">
+          <select id="category" name="category" defaultValue={category} className={inputClassName}>
+            <option value="">Any category</option>
+            {categories.map(({ category: c }) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </Field>
 
         <Field label="Location" htmlFor="location">
@@ -56,6 +71,14 @@ export default function SearchFilters({ searchParams }: { searchParams: RawSearc
                 {SOURCE_LABELS[s]}
               </option>
             ))}
+          </select>
+        </Field>
+
+        <Field label="Sort by" htmlFor="sortBy">
+          <select id="sortBy" name="sortBy" defaultValue={sortBy} className={inputClassName}>
+            <option value="">Best match</option>
+            <option value="relevance">Relevance</option>
+            <option value="date">Newest first</option>
           </select>
         </Field>
 
@@ -84,22 +107,12 @@ export default function SearchFilters({ searchParams }: { searchParams: RawSearc
         </Field>
       </div>
 
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <Field label="Sort by" htmlFor="sortBy" className="sm:w-48">
-          <select id="sortBy" name="sortBy" defaultValue={sortBy} className={inputClassName}>
-            <option value="">Best match</option>
-            <option value="relevance">Relevance</option>
-            <option value="date">Newest first</option>
-          </select>
-        </Field>
-
-        <button
-          type="submit"
-          className="rounded-lg bg-brand px-8 py-3 text-sm font-semibold text-white shadow-md shadow-brand/30 transition hover:bg-brand-dark sm:w-auto"
-        >
-          Search Jobs
-        </button>
-      </div>
+      <button
+        type="submit"
+        className="mt-5 w-full rounded-lg bg-brand py-3 text-sm font-semibold text-white shadow-md shadow-brand/30 transition hover:bg-brand-dark"
+      >
+        Search Result
+      </button>
     </form>
   );
 }

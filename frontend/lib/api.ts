@@ -1,9 +1,19 @@
 import { firstValue, type RawSearchParams } from "@/lib/searchParams";
-import type { JobSummaryDto, Page } from "@/lib/types";
+import type { CategorySummaryDto, JobSummaryDto, Page } from "@/lib/types";
 
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8080";
 
-const FORWARDED_PARAMS = ["q", "location", "source", "salaryMin", "salaryMax", "sortBy", "page", "size"] as const;
+const FORWARDED_PARAMS = [
+  "q",
+  "location",
+  "source",
+  "category",
+  "salaryMin",
+  "salaryMax",
+  "sortBy",
+  "page",
+  "size",
+] as const;
 
 /**
  * Fetches search results from the Spring Boot backend. Runs server-side
@@ -30,6 +40,25 @@ export async function getJobs(searchParams: RawSearchParams): Promise<Page<JobSu
       return null;
     }
     return (await response.json()) as Page<JobSummaryDto>;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetches the top job categories with counts, for the homepage's "Top
+ * Categories" section. Same failure handling as `getJobs`: `null` on any
+ * network failure rather than throwing.
+ */
+export async function getTopCategories(limit = 8): Promise<CategorySummaryDto[] | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/jobs/categories?limit=${limit}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as CategorySummaryDto[];
   } catch {
     return null;
   }

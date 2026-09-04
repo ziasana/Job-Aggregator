@@ -12,6 +12,12 @@ export interface JobSummaryDto {
   sources: JobSource[];
   url: string;
   publishedAt: string | null;
+  category: string | null;
+}
+
+export interface CategorySummaryDto {
+  category: string;
+  count: number;
 }
 
 export interface Page<T> {

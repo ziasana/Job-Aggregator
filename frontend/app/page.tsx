@@ -1,59 +1,83 @@
+import Image from "next/image";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
+import FeaturedJobs from "@/components/FeaturedJobs";
 import JobList from "@/components/JobList";
 import Pagination from "@/components/Pagination";
 import SearchFilters from "@/components/SearchFilters";
-import { getJobs } from "@/lib/api";
+import TopCategories from "@/components/TopCategories";
+import { getJobs, getTopCategories } from "@/lib/api";
 
 export default async function SearchPage(props: PageProps<"/">) {
   const searchParams = await props.searchParams;
-  const page = await getJobs(searchParams);
+  const [page, featured, categories] = await Promise.all([
+    getJobs(searchParams),
+    getJobs({ sortBy: "date", size: "6" }),
+    getTopCategories(8),
+  ]);
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-navy pb-28 pt-16 text-white sm:pb-36 sm:pt-20">
+      <section className="relative overflow-hidden bg-navy text-white">
+        {/* hero.jpg: Unsplash License (free for commercial/personal use), photo by
+            FOTOGRAFÍA EDITORIAL, https://unsplash.com/photos/FfHWsSOIRp4 */}
+        <Image
+          src="/hero.jpg"
+          alt="A person working on a laptop at an outdoor table"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 15% 20%, rgba(11,130,96,0.55), transparent 45%), radial-gradient(circle at 85% 0%, rgba(30,51,84,0.9), transparent 55%)",
-          }}
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/70 to-navy/30"
         />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center gap-2 text-sm font-semibold text-emerald-300">
-            <span className="h-0.5 w-8 bg-emerald-400" />
-            Live listings, aggregated in real time
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent"
+        />
+
+        <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:flex lg:items-center lg:justify-between lg:gap-12">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2 text-sm font-semibold text-emerald-300">
+              <span className="h-0.5 w-8 bg-emerald-400" />
+              Live listings, aggregated in real time
+            </div>
+            <h1 className="mt-4 text-4xl font-extrabold leading-tight sm:text-5xl">
+              Real Jobs, Real Sources, <span className="text-emerald-300">Real Results</span>
+            </h1>
+            <p className="mt-4 max-w-xl text-base text-white/70">
+              Search current job listings pulled live from Arbeitnow, Adzuna, the Bundesagentur für
+              Arbeit, and Jobicy — every result links straight back to the original posting.
+            </p>
+
+            <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
+              <div>
+                <dt className="text-3xl font-extrabold sm:text-4xl">
+                  4<span className="text-emerald-300">×</span>
+                </dt>
+                <dd className="text-sm text-white/60">Live data sources</dd>
+              </div>
+              <div>
+                <dt className="text-3xl font-extrabold sm:text-4xl">
+                  {page?.totalElements ?? "—"}
+                </dt>
+                <dd className="text-sm text-white/60">Jobs matching this search</dd>
+              </div>
+              <div>
+                <dt className="text-3xl font-extrabold sm:text-4xl">
+                  0<span className="text-emerald-300">s</span>
+                </dt>
+                <dd className="text-sm text-white/60">Cache — always fetched fresh</dd>
+              </div>
+            </dl>
           </div>
-          <h1 className="mt-4 max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Real Jobs, Real Sources, <span className="text-emerald-300">Real Results</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-base text-white/70">
-            Search current job listings pulled live from Arbeitnow, Adzuna, the Bundesagentur für
-            Arbeit, and Jobicy — every result links straight back to the original posting.
-          </p>
 
-          <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
-            <div>
-              <dt className="text-3xl font-extrabold">
-                4<span className="text-emerald-300">×</span>
-              </dt>
-              <dd className="text-sm text-white/60">Live data sources</dd>
-            </div>
-            <div>
-              <dt className="text-3xl font-extrabold">{page?.totalElements ?? "—"}</dt>
-              <dd className="text-sm text-white/60">Jobs matching this search</dd>
-            </div>
-            <div>
-              <dt className="text-3xl font-extrabold">0s</dt>
-              <dd className="text-sm text-white/60">Cache — always fetched fresh</dd>
-            </div>
-          </dl>
+          <div id="search" className="mt-12 scroll-mt-24 lg:mt-0 lg:w-[420px] lg:shrink-0">
+            <SearchFilters searchParams={searchParams} categories={categories ?? []} />
+          </div>
         </div>
-      </section>
-
-      <section id="search" className="relative mx-auto -mt-20 max-w-6xl px-4 sm:-mt-24 sm:px-6">
-        <SearchFilters searchParams={searchParams} />
       </section>
 
       <section id="listings" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
@@ -81,6 +105,10 @@ export default async function SearchPage(props: PageProps<"/">) {
           )}
         </div>
       </section>
+
+      <FeaturedJobs jobs={featured?.content ?? []} />
+
+      <TopCategories categories={categories ?? []} />
 
       <section id="how-it-works" className="bg-white py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
