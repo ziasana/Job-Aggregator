@@ -23,7 +23,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class BundesagenturAdapterTest {
 
     private static final String BASE_URL =
-            "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs";
+            "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs";
 
     @Test
     void fetchJobs_skipsWhenNoApiKey() {
@@ -49,17 +49,23 @@ class BundesagenturAdapterTest {
 
         List<NormalizedJob> jobs = adapter.fetchJobs();
 
-        assertThat(jobs).hasSize(1);
-        NormalizedJob job = jobs.get(0);
-        assertThat(job.getSource()).isEqualTo(JobSource.BUNDESAGENTUR);
-        assertThat(job.getExternalId()).isEqualTo("10001-1234567-S");
-        assertThat(job.getTitle()).isEqualTo("Softwareentwickler (m/w/d)");
-        assertThat(job.getCompany()).isEqualTo("Gamma KG");
-        assertThat(job.getLocation()).isEqualTo("Stuttgart");
-        assertThat(job.getUrl()).isEqualTo(
-                "https://www.arbeitsagentur.de/jobsuche/jobdetail/10001-1234567-S"
+        assertThat(jobs).hasSize(2);
+
+        NormalizedJob withExternalUrl = jobs.get(0);
+        assertThat(withExternalUrl.getSource()).isEqualTo(JobSource.BUNDESAGENTUR);
+        assertThat(withExternalUrl.getExternalId()).isEqualTo("10001-1234567-S");
+        assertThat(withExternalUrl.getTitle()).isEqualTo("Softwareentwickler (m/w/d)");
+        assertThat(withExternalUrl.getCompany()).isEqualTo("Gamma KG");
+        assertThat(withExternalUrl.getLocation()).isEqualTo("Stuttgart");
+        assertThat(withExternalUrl.getUrl()).isEqualTo("https://example.com/jobs/10001-1234567-S");
+        assertThat(withExternalUrl.getPublishedAt()).isNotNull();
+
+        NormalizedJob withoutExternalUrl = jobs.get(1);
+        assertThat(withoutExternalUrl.getExternalId()).isEqualTo("20002-7654321-S");
+        assertThat(withoutExternalUrl.getLocation()).isEqualTo("Leipzig");
+        assertThat(withoutExternalUrl.getUrl()).isEqualTo(
+                "https://www.arbeitsagentur.de/jobsuche/jobdetail/20002-7654321-S"
         );
-        assertThat(job.getPublishedAt()).isNotNull();
 
         server.verify();
     }

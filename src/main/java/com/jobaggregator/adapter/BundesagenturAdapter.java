@@ -23,12 +23,20 @@ import java.util.List;
  * <p>This uses a community-documented endpoint and shared API key
  * ({@code X-API-Key: jobboerse-jobsuche}), not an officially sanctioned
  * third-party integration. See README for details.
+ *
+ * <p>The endpoint moved from {@code pc/v4/jobs} to {@code pc/v6/jobs} at
+ * some point after this adapter was first written against the community
+ * docs - the old path now silently returns 403 with an empty body for
+ * every request, key included. v6 also uses 1-indexed pagination (not
+ * 0-indexed) and a materially different response shape ({@code ergebnisliste}
+ * instead of {@code stellenangebote}, German field names throughout).
  */
 @Service
 public class BundesagenturAdapter implements JobSourceAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(BundesagenturAdapter.class);
     private static final int PAGE_SIZE = 50;
+    private static final int FIRST_PAGE = 1;
 
     private final RestClient restClient;
     private final BundesagenturProperties properties;
@@ -51,9 +59,10 @@ public class BundesagenturAdapter implements JobSourceAdapter {
         }
 
         List<NormalizedJob> jobs = new ArrayList<>();
-        int page = 0;
+        int page = FIRST_PAGE;
+        int pagesFetched = 0;
 
-        while (page < properties.maxPages()) {
+        while (pagesFetched < properties.maxPages()) {
             String url = UriComponentsBuilder
                     .fromUriString(properties.baseUrl())
                     .queryParam("page", page)
@@ -66,44 +75,70 @@ public class BundesagenturAdapter implements JobSourceAdapter {
                     .retrieve()
                     .body(JsonNode.class);
 
-            JsonNode listings = response != null ? response.path("stellenangebote") : null;
+            JsonNode listings = response != null ? response.path("ergebnisliste") : null;
             if (listings == null || !listings.isArray() || listings.isEmpty()) {
                 break;
             }
 
             for (JsonNode listing : listings) {
-                jobs.add(toNormalizedJob(listing));
+                NormalizedJob job = toNormalizedJob(listing);
+                if (job != null) {
+                    jobs.add(job);
+                }
             }
             page++;
+            pagesFetched++;
         }
 
-        log.info("Bundesagentur: fetched {} jobs across {} page(s)", jobs.size(), page);
+        log.info("Bundesagentur: fetched {} jobs across {} page(s)", jobs.size(), pagesFetched);
         return jobs;
     }
 
+    /**
+     * Returns {@code null} (and logs at debug) for listings missing a field
+     * {@code NormalizedJob} requires (title, external id) - this API isn't
+     * officially documented and some listing types (e.g. private-individual
+     * postings) don't follow the usual shape. Skipping is preferable to
+     * fabricating a value per FR-2.2, and to letting one bad row fail the
+     * whole batch upsert.
+     */
     private NormalizedJob toNormalizedJob(JsonNode listing) {
         Instant now = Instant.now();
-        String externalId = textOrNull(listing, "refnr");
-        String location = textOrNull(listing.path("arbeitsort"), "ort");
-        String detailUrl = externalId != null
-                ? "https://www.arbeitsagentur.de/jobsuche/jobdetail/" + externalId
-                : null;
+        String externalId = textOrNull(listing, "referenznummer");
+        String title = textOrNull(listing, "stellenangebotsTitel");
+        if (externalId == null || title == null) {
+            log.debug("Bundesagentur: skipping listing missing title/referenznummer: {}", listing);
+            return null;
+        }
+
+        String location = firstLocation(listing.path("stellenlokationen"));
+        String externalUrl = textOrNull(listing, "externeURL");
+        String url = externalUrl != null
+                ? externalUrl
+                : "https://www.arbeitsagentur.de/jobsuche/jobdetail/" + externalId;
 
         return new NormalizedJob(
                 externalId,
                 JobSource.BUNDESAGENTUR,
-                textOrNull(listing, "titel"),
-                textOrNull(listing, "arbeitgeber"),
+                title,
+                textOrNull(listing, "firma"),
                 location,
                 null,
                 null,
                 null,
                 "EUR",
-                detailUrl,
-                parsePublishedDate(textOrNull(listing, "aktuelleVeroeffentlichungsdatum")),
+                url,
+                parsePublishedDate(textOrNull(listing, "datumErsteVeroeffentlichung")),
                 now,
                 now
         );
+    }
+
+    private String firstLocation(JsonNode stellenlokationen) {
+        if (!stellenlokationen.isArray() || stellenlokationen.isEmpty()) {
+            return null;
+        }
+        return textOrNull(stellenlokationen.get(0).path("adresse"), "ort");
     }
 
     private String textOrNull(JsonNode node, String field) {

@@ -25,7 +25,7 @@ job-aggregator:
     app-key: ${ADZUNA_APP_KEY:}
     max-pages: 5
   bundesagentur:
-    base-url: https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs
+    base-url: https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs
     api-key: ${BUNDESAGENTUR_API_KEY:jobboerse-jobsuche}
     max-pages: 5
   arbeitnow:

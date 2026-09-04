@@ -14,14 +14,20 @@ frontend consuming that API. No scheduling yet (Phase 5).
 |---|---|---|
 | [Arbeitnow](https://www.arbeitnow.com/api/job-board-api) | Public JSON API | None |
 | [Adzuna](https://developer.adzuna.com/) | Official REST API | Free App ID + Key |
-| [Bundesagentur fuer Arbeit Jobsuche](https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs) | Community-documented endpoint | Shared key (`X-API-Key: jobboerse-jobsuche`) |
+| [Bundesagentur fuer Arbeit Jobsuche](https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs) | Community-documented endpoint | Shared key (`X-API-Key: jobboerse-jobsuche`) |
 
 **Important:** the Bundesagentur integration uses a **community-documented,
 not officially sanctioned** third-party endpoint for public government job
 data. It is not a published/supported Bundesagentur API, and its shape or
-availability may change without notice — as observed during development,
-where it can return `403 Forbidden` for reasons undocumented by the community
-source. Treat it as best-effort.
+availability can change without notice: during development, the originally
+documented `pc/v4/jobs` path started returning `403 Forbidden` on every
+request (key included) with no explanation. The fix was moving to
+`pc/v6/jobs`, which is also 1-indexed for pagination and uses a different
+response shape (`ergebnisliste` instead of `stellenangebote`, German field
+names throughout) — a reminder that this integration can break again the
+same way with no warning. A small number of individual listings also lack a
+title in this API (private-employer postings, it seems); those are skipped
+rather than inserted with a fabricated title, per FR-2.2.
 
 Every listing returned by the app links back to its original source; this
 project does not host or reproduce full third-party content.
