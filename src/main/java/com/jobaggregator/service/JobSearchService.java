@@ -93,6 +93,7 @@ public class JobSearchService {
                 job.getCompany(),
                 job.getLocation(),
                 job.getCategory(),
+                JobSummarizer.summarize(job.getDescription()),
                 job.getSalaryMin(),
                 job.getSalaryMax(),
                 job.getCurrency(),

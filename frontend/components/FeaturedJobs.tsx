@@ -45,6 +45,10 @@ export default function FeaturedJobs({ jobs }: { jobs: JobSummaryDto[] }) {
                 {job.sources.map((s) => SOURCE_LABELS[s]).join(" · ")}
               </p>
 
+              {job.summary && (
+                <p className="mt-2 line-clamp-3 text-sm text-navy/70">{job.summary}</p>
+              )}
+
               <div className="mt-4 flex items-center justify-between gap-3 border-t border-black/5 pt-4">
                 <span className="text-sm font-bold text-brand">
                   {formatSalary(job) ?? "Salary not disclosed"}

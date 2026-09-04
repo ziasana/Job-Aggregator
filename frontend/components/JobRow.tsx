@@ -49,6 +49,10 @@ export default function JobRow({ job }: { job: JobSummaryDto }) {
             "Company/location not provided"}
         </p>
 
+        {job.summary && (
+          <p className="mt-2 line-clamp-2 text-sm text-navy/70">{job.summary}</p>
+        )}
+
         <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-navy/50">
           {job.sources.map((s, i) => (
             <span key={s} className="flex items-center gap-3">

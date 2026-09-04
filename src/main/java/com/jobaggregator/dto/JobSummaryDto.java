@@ -19,6 +19,7 @@ public record JobSummaryDto(
         String company,
         String location,
         String category,
+        String summary,
         BigDecimal salaryMin,
         BigDecimal salaryMax,
         String currency,

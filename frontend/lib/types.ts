@@ -13,6 +13,7 @@ export interface JobSummaryDto {
   url: string;
   publishedAt: string | null;
   category: string | null;
+  summary: string | null;
 }
 
 export interface CategorySummaryDto {
