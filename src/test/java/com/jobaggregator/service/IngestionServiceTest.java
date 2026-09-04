@@ -63,6 +63,7 @@ class IngestionServiceTest {
                 null,
                 null,
                 null,
+                null,
                 "EUR",
                 "https://www.arbeitnow.com/view/ext-1",
                 now,

@@ -41,6 +41,7 @@ class ArbeitnowAdapterTest {
         assertThat(first.getTitle()).isEqualTo("Backend Developer");
         assertThat(first.getCompany()).isEqualTo("Acme GmbH");
         assertThat(first.getLocation()).isEqualTo("Berlin");
+        assertThat(first.getCategory()).isEqualTo("Backend");
         assertThat(first.getSalaryMin()).isNull();
         assertThat(first.getSalaryMax()).isNull();
         assertThat(first.getUrl()).isEqualTo("https://www.arbeitnow.com/view/backend-developer-acme-berlin");

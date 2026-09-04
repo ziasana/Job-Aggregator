@@ -8,6 +8,7 @@ public record JobSearchCriteria(
         String keyword,
         String location,
         JobSource source,
+        String category,
         BigDecimal salaryMin,
         BigDecimal salaryMax,
         JobSortOption sort

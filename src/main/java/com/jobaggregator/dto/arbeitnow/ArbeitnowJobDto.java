@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record ArbeitnowJobDto(
@@ -13,6 +15,7 @@ public record ArbeitnowJobDto(
         String description,
         String url,
         String location,
-        Long createdAt
+        Long createdAt,
+        List<String> tags
 ) {
 }

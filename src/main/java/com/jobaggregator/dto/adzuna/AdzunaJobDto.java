@@ -14,6 +14,7 @@ public record AdzunaJobDto(
         String description,
         AdzunaCompanyDto company,
         AdzunaLocationDto location,
+        AdzunaCategoryDto category,
         BigDecimal salaryMin,
         BigDecimal salaryMax,
         String redirectUrl,
@@ -28,5 +29,10 @@ public record AdzunaJobDto(
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public record AdzunaLocationDto(String displayName) {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public record AdzunaCategoryDto(String label) {
     }
 }

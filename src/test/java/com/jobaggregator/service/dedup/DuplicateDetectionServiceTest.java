@@ -73,6 +73,7 @@ class DuplicateDetectionServiceTest {
                 null,
                 null,
                 null,
+                null,
                 "EUR",
                 "https://example.com/" + UUID.randomUUID(),
                 now,

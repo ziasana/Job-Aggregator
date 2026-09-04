@@ -77,6 +77,7 @@ public class AdzunaAdapter implements JobSourceAdapter {
         Instant publishedAt = parseCreated(dto.created());
         String company = dto.company() != null ? dto.company().displayName() : null;
         String location = dto.location() != null ? dto.location().displayName() : null;
+        String category = dto.category() != null ? dto.category().label() : null;
 
         return new NormalizedJob(
                 dto.id(),
@@ -85,6 +86,7 @@ public class AdzunaAdapter implements JobSourceAdapter {
                 company,
                 location,
                 dto.description(),
+                category,
                 dto.salaryMin(),
                 dto.salaryMax(),
                 "EUR",

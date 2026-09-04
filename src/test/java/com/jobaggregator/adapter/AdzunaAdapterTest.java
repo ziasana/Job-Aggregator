@@ -52,6 +52,7 @@ class AdzunaAdapterTest {
         assertThat(first.getTitle()).isEqualTo("Java Developer");
         assertThat(first.getCompany()).isEqualTo("Beta AG");
         assertThat(first.getLocation()).isEqualTo("Hamburg");
+        assertThat(first.getCategory()).isEqualTo("IT Jobs");
         assertThat(first.getSalaryMin()).isEqualByComparingTo(BigDecimal.valueOf(55000));
         assertThat(first.getSalaryMax()).isEqualByComparingTo(BigDecimal.valueOf(70000));
         assertThat(first.getUrl()).isEqualTo("https://www.adzuna.de/details/5001");

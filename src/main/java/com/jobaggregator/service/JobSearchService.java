@@ -1,9 +1,11 @@
 package com.jobaggregator.service;
 
+import com.jobaggregator.dto.CategorySummaryDto;
 import com.jobaggregator.dto.JobSummaryDto;
 import com.jobaggregator.entity.JobSource;
 import com.jobaggregator.entity.NormalizedJob;
 import com.jobaggregator.repository.JobRepository;
+import com.jobaggregator.service.search.CategoryCount;
 import com.jobaggregator.service.search.JobSearchCriteria;
 import com.jobaggregator.service.search.JobSortOption;
 import org.springframework.data.domain.Page;
@@ -38,6 +40,12 @@ public class JobSearchService {
         return new PageImpl<>(content, pageable, page.getTotalElements());
     }
 
+    public List<CategorySummaryDto> getTopCategories(int limit) {
+        return jobRepository.topCategories(limit).stream()
+                .map(c -> new CategorySummaryDto(c.category(), c.count()))
+                .toList();
+    }
+
     private JobSearchCriteria normalize(JobSearchCriteria raw) {
         String keyword = blankToNull(raw.keyword());
         JobSortOption sort = raw.sort();
@@ -47,7 +55,8 @@ public class JobSearchService {
             sort = JobSortOption.DATE;
         }
         return new JobSearchCriteria(
-                keyword, blankToNull(raw.location()), raw.source(), raw.salaryMin(), raw.salaryMax(), sort
+                keyword, blankToNull(raw.location()), raw.source(), blankToNull(raw.category()),
+                raw.salaryMin(), raw.salaryMax(), sort
         );
     }
 
@@ -83,6 +92,7 @@ public class JobSearchService {
                 job.getTitle(),
                 job.getCompany(),
                 job.getLocation(),
+                job.getCategory(),
                 job.getSalaryMin(),
                 job.getSalaryMax(),
                 job.getCurrency(),

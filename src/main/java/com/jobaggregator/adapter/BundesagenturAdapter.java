@@ -124,6 +124,7 @@ public class BundesagenturAdapter implements JobSourceAdapter {
                 textOrNull(listing, "firma"),
                 location,
                 null,
+                textOrNull(listing, "hauptberuf"),
                 null,
                 null,
                 "EUR",

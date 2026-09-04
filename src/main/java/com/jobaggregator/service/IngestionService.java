@@ -79,6 +79,7 @@ public class IngestionService {
             job.setCompany(incoming.getCompany());
             job.setLocation(incoming.getLocation());
             job.setDescription(incoming.getDescription());
+            job.setCategory(incoming.getCategory());
             job.setSalaryMin(incoming.getSalaryMin());
             job.setSalaryMax(incoming.getSalaryMax());
             job.setCurrency(incoming.getCurrency());

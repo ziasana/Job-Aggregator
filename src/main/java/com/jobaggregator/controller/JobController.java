@@ -1,5 +1,6 @@
 package com.jobaggregator.controller;
 
+import com.jobaggregator.dto.CategorySummaryDto;
 import com.jobaggregator.dto.JobSummaryDto;
 import com.jobaggregator.entity.JobSource;
 import com.jobaggregator.service.JobSearchService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -45,16 +47,37 @@ public class JobController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String source,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String salaryMin,
             @RequestParam(required = false) String salaryMax,
             @RequestParam(required = false) String sortBy,
             Pageable pageable
     ) {
         JobSearchCriteria criteria = new JobSearchCriteria(
-                q, location, parseSource(source), parseDecimal(salaryMin, "salaryMin"),
+                q, location, parseSource(source), category, parseDecimal(salaryMin, "salaryMin"),
                 parseDecimal(salaryMax, "salaryMax"), parseSort(sortBy)
         );
         return jobSearchService.search(criteria, pageable);
+    }
+
+    /** Real per-category job counts (deduped), for a "top categories" homepage widget. */
+    @GetMapping("/categories")
+    public List<CategorySummaryDto> topCategories(@RequestParam(required = false) String limit) {
+        int parsedLimit = parsePositiveInt(limit, 8);
+        return jobSearchService.getTopCategories(parsedLimit);
+    }
+
+    private int parsePositiveInt(String raw, int fallback) {
+        if (raw == null || raw.isBlank()) {
+            return fallback;
+        }
+        try {
+            int value = Integer.parseInt(raw.trim());
+            return value > 0 ? Math.min(value, 50) : fallback;
+        } catch (NumberFormatException e) {
+            log.debug("Ignoring unparseable limit '{}'", raw);
+            return fallback;
+        }
     }
 
     private JobSource parseSource(String raw) {

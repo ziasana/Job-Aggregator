@@ -69,6 +69,7 @@ public class JobicyAdapter implements JobSourceAdapter {
                 dto.companyName(),
                 dto.jobGeo(),
                 dto.jobExcerpt(),
+                firstIndustry(dto.jobIndustry()),
                 dto.salaryMin(),
                 dto.salaryMax(),
                 dto.salaryCurrency(),
@@ -77,6 +78,10 @@ public class JobicyAdapter implements JobSourceAdapter {
                 now,
                 now
         );
+    }
+
+    private String firstIndustry(List<String> jobIndustry) {
+        return jobIndustry != null && !jobIndustry.isEmpty() ? jobIndustry.get(0) : null;
     }
 
     private Instant parsePublishedDate(String value) {

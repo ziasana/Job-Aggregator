@@ -69,6 +69,17 @@ public class ArbeitnowAdapter implements JobSourceAdapter {
         return jobs;
     }
 
+    /**
+     * Arbeitnow has no clean category field - "tags" is a free-text bag
+     * (e.g. "KI", "Werkstudent", "Steuerberatung" all on one listing), so
+     * the first tag is used as a best-effort category (FR-2.3: best-effort,
+     * not a hard requirement). Expect this to be noisier than the other
+     * three sources' categories.
+     */
+    private String firstTag(List<String> tags) {
+        return tags != null && !tags.isEmpty() ? tags.get(0) : null;
+    }
+
     private void sleepBetweenPages() {
         try {
             Thread.sleep(PAGE_DELAY_MILLIS);
@@ -88,6 +99,7 @@ public class ArbeitnowAdapter implements JobSourceAdapter {
                 dto.companyName(),
                 dto.location(),
                 dto.description(),
+                firstTag(dto.tags()),
                 null,
                 null,
                 "EUR",

@@ -3,6 +3,7 @@ package com.jobaggregator.dto.jobicy;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record JobicyJobDto(
@@ -15,6 +16,7 @@ public record JobicyJobDto(
         String pubDate,
         BigDecimal salaryMin,
         BigDecimal salaryMax,
-        String salaryCurrency
+        String salaryCurrency,
+        List<String> jobIndustry
 ) {
 }

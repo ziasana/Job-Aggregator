@@ -1,6 +1,7 @@
 package com.jobaggregator.repository;
 
 import com.jobaggregator.entity.NormalizedJob;
+import com.jobaggregator.service.search.CategoryCount;
 import com.jobaggregator.service.search.JobSearchCriteria;
 import com.jobaggregator.service.search.JobSortOption;
 import jakarta.persistence.EntityManager;
@@ -38,6 +39,7 @@ public class JobSearchRepositoryImpl implements JobSearchRepository {
                     @@ plainto_tsquery('simple', CAST(:keyword AS text)))
               AND (CAST(:location AS text) IS NULL OR j.location ILIKE '%' || CAST(:location AS text) || '%')
               AND (CAST(:source AS text) IS NULL OR j.source = CAST(:source AS text))
+              AND (CAST(:category AS text) IS NULL OR j.category = CAST(:category AS text))
               AND (CAST(:salaryMin AS numeric) IS NULL OR j.salary_max >= CAST(:salaryMin AS numeric))
               AND (CAST(:salaryMax AS numeric) IS NULL OR j.salary_min <= CAST(:salaryMax AS numeric))
             """;
@@ -84,7 +86,31 @@ public class JobSearchRepositoryImpl implements JobSearchRepository {
         query.setParameter("keyword", criteria.keyword());
         query.setParameter("location", criteria.location());
         query.setParameter("source", criteria.source() != null ? criteria.source().name() : null);
+        query.setParameter("category", criteria.category());
         query.setParameter("salaryMin", criteria.salaryMin());
         query.setParameter("salaryMax", criteria.salaryMax());
+    }
+
+    /** Excludes Adzuna's own "Unknown" fallback category - real data, but not a useful "top category". */
+    @Override
+    public List<CategoryCount> topCategories(int limit) {
+        String sql = DEDUPED_CTE + """
+                SELECT j.category, COUNT(*) AS job_count
+                FROM deduped j
+                WHERE j.category IS NOT NULL AND j.category NOT ILIKE 'unknown'
+                GROUP BY j.category
+                ORDER BY job_count DESC
+                LIMIT :limit
+                """;
+
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("limit", limit);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = query.getResultList();
+
+        return rows.stream()
+                .map(row -> new CategoryCount((String) row[0], ((Number) row[1]).longValue()))
+                .toList();
     }
 }

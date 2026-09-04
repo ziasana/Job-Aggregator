@@ -15,7 +15,8 @@
       "salaryMin": 77000,
       "salaryMax": 100000,
       "salaryCurrency": "USD",
-      "salaryPeriod": "yearly"
+      "salaryPeriod": "yearly",
+      "jobIndustry": ["Data Science & Analytics"]
     },
     {
       "id": 150210,

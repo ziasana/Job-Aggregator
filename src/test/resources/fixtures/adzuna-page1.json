@@ -7,6 +7,7 @@
       "description": "Spring Boot role.",
       "company": { "display_name": "Beta AG" },
       "location": { "display_name": "Hamburg" },
+      "category": { "tag": "it-jobs", "label": "IT Jobs" },
       "salary_min": 55000,
       "salary_max": 70000,
       "redirect_url": "https://www.adzuna.de/details/5001",

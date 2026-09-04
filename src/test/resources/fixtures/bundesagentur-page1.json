@@ -13,7 +13,8 @@
         }
       ],
       "datumErsteVeroeffentlichung": "2024-02-01",
-      "externeURL": "https://example.com/jobs/10001-1234567-S"
+      "externeURL": "https://example.com/jobs/10001-1234567-S",
+      "hauptberuf": "Softwareentwickler/in"
     },
     {
       "referenznummer": "20002-7654321-S",

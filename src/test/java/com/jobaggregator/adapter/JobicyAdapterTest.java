@@ -44,6 +44,7 @@ class JobicyAdapterTest {
         assertThat(withSalary.getTitle()).isEqualTo("Data Analyst, Clinical Data Effectiveness");
         assertThat(withSalary.getCompany()).isEqualTo("Clover Health");
         assertThat(withSalary.getLocation()).isEqualTo("USA");
+        assertThat(withSalary.getCategory()).isEqualTo("Data Science & Analytics");
         assertThat(withSalary.getSalaryMin()).isEqualByComparingTo(BigDecimal.valueOf(77000));
         assertThat(withSalary.getSalaryMax()).isEqualByComparingTo(BigDecimal.valueOf(100000));
         assertThat(withSalary.getCurrency()).isEqualTo("USD");

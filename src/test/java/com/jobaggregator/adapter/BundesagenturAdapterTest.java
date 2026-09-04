@@ -58,6 +58,7 @@ class BundesagenturAdapterTest {
         assertThat(withExternalUrl.getCompany()).isEqualTo("Gamma KG");
         assertThat(withExternalUrl.getLocation()).isEqualTo("Stuttgart");
         assertThat(withExternalUrl.getUrl()).isEqualTo("https://example.com/jobs/10001-1234567-S");
+        assertThat(withExternalUrl.getCategory()).isEqualTo("Softwareentwickler/in");
         assertThat(withExternalUrl.getPublishedAt()).isNotNull();
 
         NormalizedJob withoutExternalUrl = jobs.get(1);

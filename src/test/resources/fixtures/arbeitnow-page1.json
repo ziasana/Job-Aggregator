@@ -7,7 +7,8 @@
       "description": "Join our backend team.",
       "url": "https://www.arbeitnow.com/view/backend-developer-acme-berlin",
       "location": "Berlin",
-      "created_at": 1700000000
+      "created_at": 1700000000,
+      "tags": ["Backend", "Java"]
     },
     {
       "slug": "frontend-developer-acme-munich",
