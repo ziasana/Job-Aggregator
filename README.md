@@ -4,9 +4,9 @@ A portfolio project that aggregates job listings from multiple public/official
 job-board APIs into one normalized dataset. See
 [`job-aggregator-spec.md`](job-aggregator-spec.md) for the full requirements.
 
-This repository currently covers **Phase 0-3**: ingestion from each source,
-cross-source duplicate detection, and a search/filter REST API. There is no
-frontend yet (Phase 4).
+This repository currently covers **Phase 0-4**: ingestion from each source,
+cross-source duplicate detection, a search/filter REST API, and a Next.js
+frontend consuming that API. No scheduling yet (Phase 5).
 
 ## Data sources
 
@@ -30,6 +30,7 @@ project does not host or reproduce full third-party content.
 
 - Java 17+
 - Docker (for local Postgres)
+- Node.js 20+ (for the frontend)
 
 Maven itself does not need to be installed — use the bundled wrapper
 (`./mvnw`).
@@ -43,11 +44,20 @@ Maven itself does not need to be installed — use the bundled wrapper
    docker compose up -d
    ```
 3. Export the env vars from `.env` into your shell (or use an env-file
-   runner of your choice), then run the app:
+   runner of your choice), then run the backend:
    ```
    export $(grep -v '^#' .env | xargs)
    ./mvnw spring-boot:run
    ```
+4. In a second terminal, run the frontend:
+   ```
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   Then open http://localhost:3000. It expects the backend on
+   `http://localhost:8080` by default (see `frontend/.env.example` to
+   override via `API_BASE_URL`).
 
 Without Adzuna/Bundesagentur credentials, those adapters log a warning and
 are skipped — Arbeitnow ingestion works with no configuration.
@@ -91,6 +101,27 @@ Elasticsearch. Duplicate groups are collapsed to one representative row (the
 most recently seen) before filtering/paging; each result's `sources` field
 lists every source that contributed to it.
 
+### Frontend (FR-7, FR-8)
+
+`frontend/` is a Next.js (App Router, TypeScript, Tailwind) app. The search
+page is a **Server Component only** — it reads the URL's `searchParams` and
+fetches `GET /api/jobs` directly, server-to-server, on every request
+(`cache: "no-store"`). The filter form and pagination/sort links are plain
+HTML `<form>`/`<a>` elements (not `next/form`/`next/link`), which means:
+
+- Every interaction is a real browser navigation — no client-side JS, no
+  React state, and no CORS configuration needed on the backend, since the
+  browser never calls port 8080 directly.
+- This was a deliberate fix, not just a simplicity choice: `next/form`'s and
+  `next/link`'s client-side "soft navigation" served a stale cached result
+  when only search params changed (confirmed the *server* rendered correctly
+  via direct `curl`, but the browser's router cache did not refetch) —
+  switching to plain `<form>`/`<a>` sidesteps that class of bug entirely.
+
+The footer (rendered on every page) discloses all three data sources with
+links, and explicitly calls out the Bundesagentur integration as
+community-documented/unofficial (FR-8.1, FR-8.2, FR-8.3).
+
 ## Tests
 
 ```
@@ -101,3 +132,8 @@ Adapter tests run against fixture JSON in `src/test/resources/fixtures/` and
 don't require network access or credentials. The full Spring context test
 (`JobAggregatorApplicationTests`) and the search repository tests do require
 a running Postgres (see "Running locally" above).
+
+The frontend has no automated tests (thin presentation layer over an
+already-tested backend endpoint, with no client-side logic); it was verified
+manually in a browser — keyword/location/source/salary filtering, pagination
+preserving active filters, mobile layout, and the backend-down error state.
