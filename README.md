@@ -4,9 +4,11 @@ A portfolio project that aggregates job listings from multiple public/official
 job-board APIs into one normalized dataset. See
 [`job-aggregator-spec.md`](job-aggregator-spec.md) for the full requirements.
 
-This repository currently covers **Phase 0-4**: ingestion from each source,
-cross-source duplicate detection, a search/filter REST API, and a Next.js
-frontend consuming that API. No scheduling yet (Phase 5).
+This repository currently covers **Phase 0-5**: ingestion from each source
+on a recurring schedule, cross-source duplicate detection, a search/filter
+REST API, and a Next.js frontend consuming that API. Stale-job archival
+(FR-4.3, optional in the spec) and deployment are intentionally out of
+scope for now.
 
 ## Data sources
 
@@ -76,7 +78,11 @@ Maven itself does not need to be installed — use the bundled wrapper
    override via `API_BASE_URL`).
 
 Without Adzuna/Bundesagentur credentials, those adapters log a warning and
-are skipped — Arbeitnow ingestion works with no configuration.
+are skipped — Arbeitnow and Jobicy ingestion work with no configuration.
+
+Ingestion now runs itself (FR-1.1): once immediately on backend startup,
+then every `job-aggregator.ingestion.interval` (default `PT6H`, an ISO-8601
+duration) — no more manual triggering needed.
 
 ## Architecture notes
 
@@ -126,6 +132,20 @@ Elasticsearch. Duplicate groups are collapsed to one representative row (the
 most recently seen) before filtering/paging; each result's `sources` field
 lists every source that contributed to it.
 
+### Scheduling (FR-1.1)
+
+`IngestionScheduler` wraps `IngestionService.runIngestion()` in a
+`@Scheduled(fixedRateString = "${job-aggregator.ingestion.interval:PT6H}")`
+method. `fixedRate`'s default `initialDelay` is `0`, so it also fires once
+immediately on startup — the app is self-populating with no manual step.
+Disable it for a given profile with
+`job-aggregator.ingestion.scheduling-enabled: false`; this is how tests
+avoid triggering real ingestion (see Tests below).
+
+Explicitly out of scope for now: stale-job archival/removal (FR-4.3 says
+"may", not "shall") and any deployment prep — both were deliberately
+deferred rather than overlooked.
+
 ### Frontend (FR-7, FR-8)
 
 `frontend/` is a Next.js (App Router, TypeScript, Tailwind) app. The search
@@ -157,7 +177,10 @@ community-documented/unofficial and Jobicy as global/remote-only
 Adapter tests run against fixture JSON in `src/test/resources/fixtures/` and
 don't require network access or credentials. The full Spring context test
 (`JobAggregatorApplicationTests`) and the search repository tests do require
-a running Postgres (see "Running locally" above).
+a running Postgres (see "Running locally" above); both activate the `test`
+Spring profile (`src/test/resources/application-test.yml`), which disables
+the ingestion scheduler so `./mvnw test` never fires real HTTP calls to any
+of the four external APIs.
 
 The frontend has no automated tests (thin presentation layer over an
 already-tested backend endpoint, with no client-side logic); it was verified

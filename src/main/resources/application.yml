@@ -18,6 +18,8 @@ logging:
     com.jobaggregator: debug
 
 job-aggregator:
+  ingestion:
+    interval: PT6H
   adzuna:
     base-url: https://api.adzuna.com/v1/api/jobs
     country: de

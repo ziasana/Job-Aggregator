@@ -1,0 +1,3 @@
+job-aggregator:
+  ingestion:
+    scheduling-enabled: false
