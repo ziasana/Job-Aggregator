@@ -1,3 +1,5 @@
+import Logo from "@/components/Logo";
+
 const SOURCES = [
   { name: "Arbeitnow", href: "https://www.arbeitnow.com/" },
   { name: "Adzuna", href: "https://www.adzuna.com/" },
@@ -13,9 +15,7 @@ export default function Footer() {
           <div className="sm:col-span-1">
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a>, not next/link, by deliberate project convention (see AGENTS/README) */}
             <a href="/" className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
-                J
-              </span>
+              <Logo className="h-8 w-8" />
               <span className="text-base font-bold text-white">
                 Job<span className="text-brand">Aggregator</span>
               </span>

@@ -1,12 +1,12 @@
+import Logo from "@/components/Logo";
+
 export default function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-black/5 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a>, not next/link, by deliberate project convention (see AGENTS/README) */}
         <a href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-base font-bold text-white">
-            J
-          </span>
+          <Logo />
           <span className="text-lg font-bold tracking-tight text-navy">
             Job<span className="text-brand">Aggregator</span>
           </span>
