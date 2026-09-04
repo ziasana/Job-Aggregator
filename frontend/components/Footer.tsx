@@ -1,61 +1,61 @@
+const SOURCES = [
+  { name: "Arbeitnow", href: "https://www.arbeitnow.com/" },
+  { name: "Adzuna", href: "https://www.adzuna.com/" },
+  { name: "Bundesagentur für Arbeit", href: "https://www.arbeitsagentur.de/jobsuche/" },
+  { name: "Jobicy", href: "https://jobicy.com/" },
+];
+
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-black/10 py-6 text-sm text-black/60 dark:border-white/15 dark:text-white/50">
-      <div className="mx-auto max-w-4xl px-4">
-        <p>
-          Job listings are aggregated from third-party sources and always link back to the
-          original posting — this site does not host job content itself.
-        </p>
-        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-          <li>
-            <a
-              href="https://www.arbeitnow.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              Arbeitnow
+    <footer id="sources" className="mt-16 bg-navy text-white/70">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+          <div className="sm:col-span-1">
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a>, not next/link, by deliberate project convention (see AGENTS/README) */}
+            <a href="/" className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                J
+              </span>
+              <span className="text-base font-bold text-white">
+                Job<span className="text-brand">Aggregator</span>
+              </span>
             </a>
-          </li>
-          <li>
-            <a
-              href="https://www.adzuna.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              Adzuna
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.arbeitsagentur.de/jobsuche/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              Bundesagentur für Arbeit
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://jobicy.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              Jobicy
-            </a>
-          </li>
-        </ul>
-        <p className="mt-2">
-          The Bundesagentur für Arbeit integration uses a community-documented, unofficial API
-          endpoint — it is not an officially sanctioned integration.
-        </p>
-        <p className="mt-2">
-          Unlike the other sources, Jobicy lists remote jobs from anywhere in the world, not just
-          Germany.
-        </p>
+            <p className="mt-3 text-sm leading-relaxed">
+              Job listings are aggregated from third-party sources and always link back to the
+              original posting — this site does not host job content itself.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-white">Data sources</h3>
+            <ul className="mt-3 flex flex-col gap-2 text-sm">
+              {SOURCES.map((s) => (
+                <li key={s.name}>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="transition hover:text-brand">
+                    {s.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-white">Good to know</h3>
+            <p className="mt-3 text-sm leading-relaxed">
+              The Bundesagentur für Arbeit integration uses a community-documented, unofficial API
+              endpoint — it is not an officially sanctioned integration.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed">
+              Unlike the other sources, Jobicy lists remote jobs from anywhere in the world, not
+              just Germany.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-white/10 pt-6 text-xs text-white/40">
+          Job Aggregator — a portfolio project aggregating live listings from four job data
+          sources.
+        </div>
       </div>
     </footer>
   );
