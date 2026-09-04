@@ -41,6 +41,14 @@ public class NormalizedJob {
     @Column(columnDefinition = "text")
     private String description;
 
+    /**
+     * Computed from {@code description} at ingestion time (see
+     * IngestionService) and persisted, rather than recomputed on every read -
+     * null when {@code description} is null/blank (e.g. Bundesagentur).
+     */
+    @Column(length = 512)
+    private String summary;
+
     private String category;
 
     @Column(name = "salary_min")
@@ -145,6 +153,14 @@ public class NormalizedJob {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getCategory() {

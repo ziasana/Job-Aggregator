@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -50,6 +51,37 @@ class IngestionServiceTest {
         service.runIngestion();
 
         verify(jobRepository, times(1)).save(job);
+    }
+
+    @Test
+    void upsert_computesAndStoresSummaryFromDescriptionOnInsert() {
+        NormalizedJob job = newJob();
+        job.setDescription("<p>Join our team &amp; build great things.</p>");
+        when(jobRepository.findBySourceAndExternalId(any(), anyString())).thenReturn(Optional.empty());
+        when(jobRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        IngestionService service = new IngestionService(List.of(), jobRepository, duplicateDetectionService);
+        service.upsertAll(List.of(job));
+
+        assertThat(job.getSummary()).isEqualTo("Join our team & build great things.");
+    }
+
+    @Test
+    void upsert_recomputesSummaryOnUpdateWhenDescriptionChanges() {
+        NormalizedJob existing = newJob();
+        existing.setDescription("Old description.");
+        existing.setSummary("Old description.");
+
+        NormalizedJob incoming = newJob();
+        incoming.setDescription("New description.");
+
+        when(jobRepository.findBySourceAndExternalId(any(), anyString())).thenReturn(Optional.of(existing));
+        when(jobRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        IngestionService service = new IngestionService(List.of(), jobRepository, duplicateDetectionService);
+        service.upsertAll(List.of(incoming));
+
+        assertThat(existing.getSummary()).isEqualTo("New description.");
     }
 
     private NormalizedJob newJob() {

@@ -72,6 +72,7 @@ public class IngestionService {
         Optional<NormalizedJob> existing = jobRepository.findBySourceAndExternalId(
                 incoming.getSource(), incoming.getExternalId()
         );
+        String summary = JobSummarizer.summarize(incoming.getDescription());
 
         if (existing.isPresent()) {
             NormalizedJob job = existing.get();
@@ -79,6 +80,7 @@ public class IngestionService {
             job.setCompany(incoming.getCompany());
             job.setLocation(incoming.getLocation());
             job.setDescription(incoming.getDescription());
+            job.setSummary(summary);
             job.setCategory(incoming.getCategory());
             job.setSalaryMin(incoming.getSalaryMin());
             job.setSalaryMax(incoming.getSalaryMax());
@@ -90,6 +92,7 @@ public class IngestionService {
             return false;
         }
 
+        incoming.setSummary(summary);
         jobRepository.save(incoming);
         return true;
     }
