@@ -16,7 +16,7 @@ export default function Header() {
           <a href="#search" className="transition hover:text-brand">
             Search
           </a>
-          <a href="#listings" className="transition hover:text-brand">
+          <a href="/jobs" className="transition hover:text-brand">
             Listings
           </a>
           <a href="#how-it-works" className="transition hover:text-brand">

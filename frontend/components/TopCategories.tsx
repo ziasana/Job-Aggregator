@@ -17,7 +17,7 @@ export default function TopCategories({ categories }: { categories: CategorySumm
           {categories.map(({ category, count }) => (
             <li key={category}>
               <a
-                href={`/?category=${encodeURIComponent(category)}`}
+                href={`/jobs?category=${encodeURIComponent(category)}`}
                 className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white p-6 text-center transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg"
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-light text-xl" aria-hidden>

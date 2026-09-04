@@ -9,9 +9,11 @@ const inputClassName =
 export default function SearchFilters({
   searchParams,
   categories,
+  variant = "hero",
 }: {
   searchParams: RawSearchParams;
   categories: CategorySummaryDto[];
+  variant?: "hero" | "sidebar";
 }) {
   const q = firstValue(searchParams.q) ?? "";
   const location = firstValue(searchParams.location) ?? "";
@@ -20,15 +22,26 @@ export default function SearchFilters({
   const salaryMin = firstValue(searchParams.salaryMin) ?? "";
   const salaryMax = firstValue(searchParams.salaryMax) ?? "";
   const sortBy = firstValue(searchParams.sortBy) ?? "";
+  const isSidebar = variant === "sidebar";
 
   return (
     <form
       method="GET"
-      action="/"
-      className="rounded-3xl bg-white p-6 shadow-2xl shadow-black/20 ring-1 ring-black/5 sm:p-8"
+      action="/jobs"
+      className={
+        isSidebar
+          ? "rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6"
+          : "rounded-3xl bg-white p-6 shadow-2xl shadow-black/20 ring-1 ring-black/5 sm:p-8"
+      }
     >
-      <h2 className="text-xl font-extrabold text-navy sm:text-2xl">
-        Grow Your Career With <span className="text-brand">Job Aggregator</span>
+      <h2 className={isSidebar ? "text-base font-extrabold text-navy" : "text-xl font-extrabold text-navy sm:text-2xl"}>
+        {isSidebar ? (
+          "Filter Jobs"
+        ) : (
+          <>
+            Grow Your Career With <span className="text-brand">Job Aggregator</span>
+          </>
+        )}
       </h2>
 
       <div className="mt-5">
@@ -41,7 +54,7 @@ export default function SearchFilters({
         />
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className={isSidebar ? "mt-3 grid grid-cols-1 gap-3" : "mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2"}>
         <Field label="Job Category" htmlFor="category">
           <select id="category" name="category" defaultValue={category} className={inputClassName}>
             <option value="">Any category</option>

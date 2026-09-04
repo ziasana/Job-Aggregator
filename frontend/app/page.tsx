@@ -1,17 +1,13 @@
 import Image from "next/image";
-import EmptyState from "@/components/EmptyState";
-import ErrorState from "@/components/ErrorState";
 import FeaturedJobs from "@/components/FeaturedJobs";
-import JobList from "@/components/JobList";
-import Pagination from "@/components/Pagination";
 import SearchFilters from "@/components/SearchFilters";
 import TopCategories from "@/components/TopCategories";
 import { getJobs, getTopCategories } from "@/lib/api";
 
 export default async function SearchPage(props: PageProps<"/">) {
   const searchParams = await props.searchParams;
-  const [page, featured, categories] = await Promise.all([
-    getJobs(searchParams),
+  const [totalJobs, featured, categories] = await Promise.all([
+    getJobs({ size: "1" }),
     getJobs({ sortBy: "date", size: "6" }),
     getTopCategories(8),
   ]);
@@ -61,9 +57,9 @@ export default async function SearchPage(props: PageProps<"/">) {
               </div>
               <div>
                 <dt className="text-3xl font-extrabold sm:text-4xl">
-                  {page?.totalElements ?? "—"}
+                  {totalJobs?.totalElements ?? "—"}
                 </dt>
-                <dd className="text-sm text-white/60">Jobs matching this search</dd>
+                <dd className="text-sm text-white/60">Live jobs available</dd>
               </div>
               <div>
                 <dt className="text-3xl font-extrabold sm:text-4xl">
@@ -77,32 +73,6 @@ export default async function SearchPage(props: PageProps<"/">) {
           <div id="search" className="mt-12 scroll-mt-24 lg:mt-0 lg:w-[420px] lg:shrink-0">
             <SearchFilters searchParams={searchParams} categories={categories ?? []} />
           </div>
-        </div>
-      </section>
-
-      <section id="listings" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-2xl font-extrabold text-navy sm:text-3xl">Job Listings</h2>
-            <p className="mt-1 text-sm text-navy/60">
-              {page === null
-                ? "Live results will appear here once the search service responds."
-                : `${page.totalElements} job${page.totalElements === 1 ? "" : "s"} found across all four sources.`}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          {page === null ? (
-            <ErrorState />
-          ) : page.empty ? (
-            <EmptyState />
-          ) : (
-            <>
-              <JobList jobs={page.content} />
-              <Pagination page={page} searchParams={searchParams} />
-            </>
-          )}
         </div>
       </section>
 

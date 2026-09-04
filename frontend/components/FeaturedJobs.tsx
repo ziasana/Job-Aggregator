@@ -62,6 +62,15 @@ export default function FeaturedJobs({ jobs }: { jobs: JobSummaryDto[] }) {
             </li>
           ))}
         </ul>
+
+        <div className="mt-10 text-center">
+          <a
+            href="/jobs"
+            className="inline-flex items-center rounded-full border border-brand px-6 py-2.5 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
+          >
+            View all jobs
+          </a>
+        </div>
       </div>
     </section>
   );

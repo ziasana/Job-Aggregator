@@ -12,7 +12,8 @@ export function firstValue(value: string | string[] | undefined): string | undef
  */
 export function buildHref(
   current: RawSearchParams,
-  overrides: Record<string, string | number | undefined>
+  overrides: Record<string, string | number | undefined>,
+  basePath = "/jobs"
 ): string {
   const params = new URLSearchParams();
 
@@ -32,5 +33,5 @@ export function buildHref(
   }
 
   const qs = params.toString();
-  return qs ? `/?${qs}` : "/";
+  return qs ? `${basePath}?${qs}` : basePath;
 }
