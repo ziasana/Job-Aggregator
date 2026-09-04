@@ -1,7 +1,7 @@
 import { firstValue, type RawSearchParams } from "@/lib/searchParams";
 import { SOURCE_LABELS, type JobSource } from "@/lib/types";
 
-const SOURCES: JobSource[] = ["ARBEITNOW", "ADZUNA", "BUNDESAGENTUR"];
+const SOURCES: JobSource[] = ["ARBEITNOW", "ADZUNA", "BUNDESAGENTUR", "JOBICY"];
 
 const inputClassName =
   "rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm dark:border-white/20";

@@ -13,7 +13,8 @@ export default async function SearchPage(props: PageProps<"/">) {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Job Aggregator</h1>
       <p className="mt-1 text-sm text-black/60 dark:text-white/60">
-        Search job listings aggregated from Arbeitnow, Adzuna, and the Bundesagentur für Arbeit.
+        Search job listings aggregated from Arbeitnow, Adzuna, the Bundesagentur für Arbeit, and
+        Jobicy.
       </p>
 
       <div className="mt-6">

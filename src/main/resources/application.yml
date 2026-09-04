@@ -31,5 +31,8 @@ job-aggregator:
   arbeitnow:
     base-url: https://www.arbeitnow.com/api/job-board-api
     max-pages: 5
+  jobicy:
+    base-url: https://jobicy.com/api/v2/remote-jobs
+    count: 200
   dedup:
     title-similarity-threshold: 0.90

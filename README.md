@@ -15,6 +15,7 @@ frontend consuming that API. No scheduling yet (Phase 5).
 | [Arbeitnow](https://www.arbeitnow.com/api/job-board-api) | Public JSON API | None |
 | [Adzuna](https://developer.adzuna.com/) | Official REST API | Free App ID + Key |
 | [Bundesagentur fuer Arbeit Jobsuche](https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs) | Community-documented endpoint | Shared key (`X-API-Key: jobboerse-jobsuche`) |
+| [Jobicy](https://jobicy.com/api/v2/remote-jobs) | Public JSON API | None |
 
 **Important:** the Bundesagentur integration uses a **community-documented,
 not officially sanctioned** third-party endpoint for public government job
@@ -28,6 +29,15 @@ names throughout) — a reminder that this integration can break again the
 same way with no warning. A small number of individual listings also lack a
 title in this API (private-employer postings, it seems); those are skipped
 rather than inserted with a fabricated title, per FR-2.2.
+
+Unlike the other three, Jobicy is a global remote-jobs feed, not
+Germany-specific — its listings' `location` is typically a region
+(`"USA"`, `"Europe"`) rather than a city. It's free with no API key and no
+signup; its own usage notice just asks that results credit Jobicy and link
+directly to the original job URL, which is exactly how every source here is
+already displayed. It also isn't paginated the way the others are — it caps
+at 200 results per request, so one ingestion request per run is all there
+is.
 
 Every listing returned by the app links back to its original source; this
 project does not host or reproduce full third-party content.
@@ -72,7 +82,16 @@ are skipped — Arbeitnow ingestion works with no configuration.
 
 - Each source is an independent `JobSourceAdapter` implementation
   (`adapter/`), so adding a new source means writing one new adapter without
-  touching ingestion, storage, or (future) API/search layers.
+  touching ingestion, storage, or (future) API/search layers — confirmed in
+  practice when Jobicy was added as a fourth source.
+- **Gotcha when adding a new `JobSource` enum value to an existing database:**
+  Hibernate auto-generates a `CHECK` constraint enumerating the enum's known
+  values when it first creates the `normalized_job` table, and
+  `ddl-auto: update` does not widen that constraint when the enum gains a
+  new constant — inserts for the new source fail with a constraint
+  violation until the constraint is dropped and recreated manually (or the
+  dev database is reset). One more reminder that `ddl-auto: update` is a
+  local-dev convenience, not a migration tool.
 - `IngestionService` runs each adapter in isolation — one source failing
   (rate limit, bad credentials, API shape change) does not block the others.
 - Jobs are upserted by `(source, external_id)`, so re-running ingestion
@@ -124,9 +143,10 @@ HTML `<form>`/`<a>` elements (not `next/form`/`next/link`), which means:
   via direct `curl`, but the browser's router cache did not refetch) —
   switching to plain `<form>`/`<a>` sidesteps that class of bug entirely.
 
-The footer (rendered on every page) discloses all three data sources with
+The footer (rendered on every page) discloses all four data sources with
 links, and explicitly calls out the Bundesagentur integration as
-community-documented/unofficial (FR-8.1, FR-8.2, FR-8.3).
+community-documented/unofficial and Jobicy as global/remote-only
+(FR-8.1, FR-8.2, FR-8.3).
 
 ## Tests
 

@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Job Aggregator",
-  description: "Search job listings aggregated from Arbeitnow, Adzuna, and the Bundesagentur für Arbeit.",
+  description:
+    "Search job listings aggregated from Arbeitnow, Adzuna, the Bundesagentur für Arbeit, and Jobicy.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

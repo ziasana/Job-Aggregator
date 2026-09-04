@@ -1,0 +1,32 @@
+{
+  "apiVersion": "2.2.16",
+  "jobCount": 2,
+  "jobs": [
+    {
+      "id": 150923,
+      "url": "https://jobicy.com/jobs/150923-data-analyst-clinical-data-effectiveness",
+      "jobSlug": "150923-data-analyst-clinical-data-effectiveness",
+      "jobTitle": "Data Analyst, Clinical Data Effectiveness",
+      "companyName": "Clover Health",
+      "jobGeo": "USA",
+      "jobExcerpt": "Counterpart Health is an AI-powered physician enablement platform...",
+      "jobDescription": "<p>Full HTML description here.</p>",
+      "pubDate": "2026-09-04T05:55:11+00:00",
+      "salaryMin": 77000,
+      "salaryMax": 100000,
+      "salaryCurrency": "USD",
+      "salaryPeriod": "yearly"
+    },
+    {
+      "id": 150210,
+      "url": "https://jobicy.com/jobs/150210-customer-engineer-jylland-denmark",
+      "jobSlug": "150210-customer-engineer-jylland-denmark",
+      "jobTitle": "Customer Engineer - Jylland, Denmark",
+      "companyName": "NCR Voyix",
+      "jobGeo": "Denmark",
+      "jobExcerpt": "About NCR VOYIX...",
+      "jobDescription": "<p>Full HTML description here.</p>",
+      "pubDate": "2026-09-04T05:20:12+00:00"
+    }
+  ]
+}

@@ -37,10 +37,24 @@ export default function Footer() {
               Bundesagentur für Arbeit
             </a>
           </li>
+          <li>
+            <a
+              href="https://jobicy.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+            >
+              Jobicy
+            </a>
+          </li>
         </ul>
         <p className="mt-2">
           The Bundesagentur für Arbeit integration uses a community-documented, unofficial API
           endpoint — it is not an officially sanctioned integration.
+        </p>
+        <p className="mt-2">
+          Unlike the other sources, Jobicy lists remote jobs from anywhere in the world, not just
+          Germany.
         </p>
       </div>
     </footer>

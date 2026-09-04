@@ -1,4 +1,4 @@
-export type JobSource = "ARBEITNOW" | "ADZUNA" | "BUNDESAGENTUR";
+export type JobSource = "ARBEITNOW" | "ADZUNA" | "BUNDESAGENTUR" | "JOBICY";
 
 export interface JobSummaryDto {
   id: string;
@@ -29,4 +29,5 @@ export const SOURCE_LABELS: Record<JobSource, string> = {
   ARBEITNOW: "Arbeitnow",
   ADZUNA: "Adzuna",
   BUNDESAGENTUR: "Bundesagentur für Arbeit",
+  JOBICY: "Jobicy",
 };
