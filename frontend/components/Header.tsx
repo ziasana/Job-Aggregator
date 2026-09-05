@@ -19,6 +19,10 @@ export default function Header() {
           <a href="/jobs" className="transition hover:text-brand">
             Listings
           </a>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a>, not next/link, by deliberate project convention (see AGENTS/README) */}
+          <a href="/blog" className="transition hover:text-brand">
+            Blog
+          </a>
           <a href="#how-it-works" className="transition hover:text-brand">
             How it works
           </a>

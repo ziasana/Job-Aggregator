@@ -34,7 +34,8 @@ public class JobSearchRepositoryImpl implements JobSearchRepository {
             """;
 
     private static final String WHERE_CLAUSE = """
-            WHERE (CAST(:keyword AS text) IS NULL OR to_tsvector('simple',
+            WHERE j.hidden = false
+              AND (CAST(:keyword AS text) IS NULL OR to_tsvector('simple',
                     j.title || ' ' || coalesce(j.company, '') || ' ' || coalesce(j.description, ''))
                     @@ plainto_tsquery('simple', CAST(:keyword AS text)))
               AND (CAST(:location AS text) IS NULL OR j.location ILIKE '%' || CAST(:location AS text) || '%')
@@ -97,7 +98,8 @@ public class JobSearchRepositoryImpl implements JobSearchRepository {
         String sql = DEDUPED_CTE + """
                 SELECT j.category, COUNT(*) AS job_count
                 FROM deduped j
-                WHERE j.category IS NOT NULL AND j.category NOT ILIKE 'unknown'
+                WHERE j.hidden = false
+                  AND j.category IS NOT NULL AND j.category NOT ILIKE 'unknown'
                 GROUP BY j.category
                 ORDER BY job_count DESC
                 LIMIT :limit

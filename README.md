@@ -75,7 +75,10 @@ Maven itself does not need to be installed — use the bundled wrapper
    ```
    Then open http://localhost:3000. It expects the backend on
    `http://localhost:8080` by default (see `frontend/.env.example` to
-   override via `API_BASE_URL`).
+   override via `API_BASE_URL`). Copy `frontend/.env.example` to
+   `frontend/.env.local` too, and make sure its `ADMIN_USERNAME`/
+   `ADMIN_PASSWORD` match the backend's - they gate `/admin` (see "Admin
+   dashboard" below).
 
 Without Adzuna/Bundesagentur credentials, those adapters log a warning and
 are skipped — Arbeitnow and Jobicy ingestion work with no configuration.
@@ -131,6 +134,30 @@ company, and description, as called for in the spec's tech stack — no
 Elasticsearch. Duplicate groups are collapsed to one representative row (the
 most recently seen) before filtering/paging; each result's `sources` field
 lists every source that contributed to it.
+
+### Admin dashboard
+
+`/admin` (frontend) and `/api/admin/jobs` (backend) let an operator manage
+individual stored rows - hide a job from public search without deleting it,
+un-hide it, or delete it outright. Unlike the public search API, this
+operates on raw `normalized_job` rows rather than deduped groups, since
+hiding/deleting is a per-row decision (e.g. one source's copy of a
+cross-posted job).
+
+Both are protected by a single HTTP Basic auth account
+(`job-aggregator.admin.username`/`.password` on the backend,
+`ADMIN_USERNAME`/`ADMIN_PASSWORD` in the frontend's env - see `.env.example`
+in both directories; **change the defaults before deploying**). The
+frontend's `proxy.ts` challenges any request under `/admin` for those same
+credentials before the page renders; admin mutations run as Next.js Server
+Actions that call the backend with the same credentials attached
+server-side, so the browser never talks to the backend directly and never
+sees its credentials.
+
+A hidden job is excluded from `/api/jobs` search results and the "top
+categories" counts, but stays in the database - re-ingestion never clears
+the flag (`IngestionService.upsert` doesn't touch it), so hiding a listing
+sticks across ingestion runs.
 
 ### Scheduling (FR-1.1)
 

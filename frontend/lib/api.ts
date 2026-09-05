@@ -1,5 +1,5 @@
 import { firstValue, type RawSearchParams } from "@/lib/searchParams";
-import type { CategorySummaryDto, JobSummaryDto, Page } from "@/lib/types";
+import type { BlogPostDto, BlogPostSummaryDto, CategorySummaryDto, JobSummaryDto, Page } from "@/lib/types";
 
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8080";
 
@@ -59,6 +59,43 @@ export async function getTopCategories(limit = 8): Promise<CategorySummaryDto[] 
       return null;
     }
     return (await response.json()) as CategorySummaryDto[];
+  } catch {
+    return null;
+  }
+}
+
+/** Public, read-only blog listing (no comments/interaction - see BlogController). */
+export async function getBlogPosts(searchParams: RawSearchParams): Promise<Page<BlogPostSummaryDto> | null> {
+  const qs = new URLSearchParams();
+  for (const key of ["page", "size"] as const) {
+    const value = firstValue(searchParams[key]);
+    if (value) {
+      qs.set(key, value);
+    }
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog?${qs.toString()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as Page<BlogPostSummaryDto>;
+  } catch {
+    return null;
+  }
+}
+
+export async function getBlogPost(slug: string): Promise<BlogPostDto | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog/${slug}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as BlogPostDto;
   } catch {
     return null;
   }

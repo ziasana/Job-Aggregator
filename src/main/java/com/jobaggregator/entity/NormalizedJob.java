@@ -75,6 +75,10 @@ public class NormalizedJob {
     @Column(name = "duplicate_group_id")
     private UUID duplicateGroupId;
 
+    /** Admin-controlled: hides the job from public search results without deleting it. */
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean hidden = false;
+
     protected NormalizedJob() {
         // JPA
     }
@@ -229,5 +233,13 @@ public class NormalizedJob {
 
     public void setDuplicateGroupId(UUID duplicateGroupId) {
         this.duplicateGroupId = duplicateGroupId;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 }

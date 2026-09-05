@@ -16,6 +16,47 @@ export interface JobSummaryDto {
   summary: string | null;
 }
 
+export interface AdminJobDto {
+  id: string;
+  title: string;
+  company: string | null;
+  location: string | null;
+  category: string | null;
+  summary: string | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  currency: string;
+  source: JobSource;
+  url: string;
+  publishedAt: string | null;
+  firstSeenAt: string;
+  lastSeenAt: string;
+  hidden: boolean;
+}
+
+export interface BlogPostSummaryDto {
+  id: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  excerpt: string | null;
+  coverImageUrl: string | null;
+  publishedAt: string;
+}
+
+export interface BlogPostDto extends BlogPostSummaryDto {
+  body: string;
+  updatedAt: string;
+}
+
+export interface BlogPostInput {
+  title: string;
+  category: string;
+  excerpt: string;
+  body: string;
+  coverImageUrl: string;
+}
+
 export interface CategorySummaryDto {
   category: string;
   count: number;
